@@ -8,7 +8,7 @@ app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
     res.status(200)
     res.json({ message: 'Hello, express' })
 })
