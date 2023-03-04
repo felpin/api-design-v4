@@ -3,6 +3,7 @@ import morgan from "morgan";
 import bodyParser from "body-parser";
 
 import { login, signup } from "./handlers/auth";
+import productRouter from "./routes/product";
 
 const app = express();
 
@@ -13,9 +14,6 @@ app.use(bodyParser.json());
 app.post("/login", login);
 app.post("/signup", signup);
 
-app.get("/", (_req, res) => {
-  res.status(200);
-  res.json({ message: "Hello, express" });
-});
+app.use("/products", productRouter);
 
 export default app;

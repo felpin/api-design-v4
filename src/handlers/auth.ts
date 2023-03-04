@@ -2,7 +2,7 @@ import type { User } from "@prisma/client";
 import type { Request } from "express";
 
 import database from "../database";
-import type { ServerResponse } from "../types/server";
+import type { ServerResponse } from "../types";
 import { comparePasswords, createJsonWebToken, hashPassword } from "../utils/auth";
 
 type AuthRequest = Request<{}, {}, AuthRequestBody>;
@@ -16,17 +16,14 @@ export async function login(request: AuthRequest, response: ServerResponse<{ tok
   const { username, password } = request.body;
 
   const user = await database.user.findUnique({ where: { username } });
-  const error = "Invalid username/password";
 
   if (!user) {
-    response.status(401);
-    return response.json({ errors: [error] });
+    return response.sendStatus(401);
   }
 
   const isPasswordValid = comparePasswords(password, user.password);
   if (!isPasswordValid) {
-    response.status(401);
-    return response.json({ errors: [error] });
+    return response.sendStatus(401);
   }
 
   return response.json({ data: { token: createJsonWebToken(user) } });

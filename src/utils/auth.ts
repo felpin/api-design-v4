@@ -12,6 +12,16 @@ export function createJsonWebToken(user: User) {
   return jwt.sign({ id: user.id }, secret);
 }
 
+export function verifyJsonWebToken(token: string) {
+  const secret = process.env?.["JWT_SECRET"];
+
+  if (secret === undefined) {
+    throw new Error("Cannot verify token without a secret");
+  }
+
+  return jwt.verify(token, secret);
+}
+
 export function comparePasswords(password: string, passwordHash: string) {
   return bcrypt.compareSync(password, passwordHash);
 }
