@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 
 import { login, signup } from "./handlers/auth";
 import productRouter from "./routes/product";
+import routePrefix from "./route-prefix";
 
 const app = express();
 
@@ -14,6 +15,6 @@ app.use(bodyParser.json());
 app.post("/login", login);
 app.post("/signup", signup);
 
-app.use("/products", productRouter);
+app.use(routePrefix.product, productRouter);
 
 export default app;
