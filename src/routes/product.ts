@@ -2,10 +2,10 @@ import type { Product } from "@prisma/client";
 import express, { Request } from "express";
 
 import authenticated from "../middlewares/authenticated";
-import { createProduct, getProducts } from "../handlers/product";
+import { createProduct, getProducts, updateProduct } from "../handlers/product";
 import routePrefix from "../route-prefix";
 import type { ServerResponse } from "../types";
-import type { ProductCreateRequest } from "./product.types";
+import type { ProductCreateRequest, ProductUpdateRequest } from "./product.types";
 import { validateProductCreation } from "./product.validation";
 
 const router = express.Router();
@@ -38,5 +38,20 @@ router.post(
       .json({ data: product });
   }
 );
+
+router.patch("/:id", async (request: ProductUpdateRequest, response: ServerResponse<Product>) => {
+  const user = request.user;
+  if (!user) {
+    return response.sendStatus(500);
+  }
+
+  const product = await updateProduct({
+    ...request.body,
+    id: request.params.id,
+    belongsToId: user.id,
+  });
+
+  return response.json({ data: product });
+});
 
 export default router;
