@@ -5,8 +5,9 @@ import authenticated from "../middlewares/authenticated";
 import { createProduct, getProducts, updateProduct } from "../handlers/product";
 import routePrefix from "../route-prefix";
 import type { ServerResponse } from "../types";
+import validate from "../utils/validate";
 import type { ProductCreateRequest, ProductUpdateRequest } from "./product.types";
-import { validateProductCreation } from "./product.validation";
+import { ProductCreateValidation } from "./product.validation";
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ router.get("/", async (request: Request, response: ServerResponse<Product[]>) =>
 
 router.post(
   "/",
-  validateProductCreation,
+  validate(ProductCreateValidation),
   async (request: ProductCreateRequest, response: ServerResponse<Product>) => {
     const user = request.user;
     if (!user) {
@@ -39,19 +40,23 @@ router.post(
   }
 );
 
-router.patch("/:id", async (request: ProductUpdateRequest, response: ServerResponse<Product>) => {
-  const user = request.user;
-  if (!user) {
-    return response.sendStatus(500);
+router.patch(
+  "/:id",
+  validate(ProductCreateValidation),
+  async (request: ProductUpdateRequest, response: ServerResponse<Product>) => {
+    const user = request.user;
+    if (!user) {
+      return response.sendStatus(500);
+    }
+
+    const product = await updateProduct({
+      ...request.body,
+      id: request.params.id,
+      belongsToId: user.id,
+    });
+
+    return response.json({ data: product });
   }
-
-  const product = await updateProduct({
-    ...request.body,
-    id: request.params.id,
-    belongsToId: user.id,
-  });
-
-  return response.json({ data: product });
-});
+);
 
 export default router;
