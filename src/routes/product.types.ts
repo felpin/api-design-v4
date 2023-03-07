@@ -6,4 +6,6 @@ export type ProductCreateRequest = Request<{}, any, ProductCreateRequestBody>;
 
 export type ProductCreateRequestBody = Pick<ProductCreate, "name">;
 
+export type ProductDeleteRequest = Request<{ id: string }>;
+
 export type ProductUpdateRequest = Request<{ id: string }, any, ProductCreateRequestBody>;

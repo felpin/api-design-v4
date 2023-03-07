@@ -4,10 +4,16 @@ import database from "../database";
 
 export type ProductCreate = Pick<Product, "name" | "belongsToId">;
 
+export type ProductDelete = Pick<Product, "id" | "belongsToId">;
+
 export type ProductUpdate = Pick<Product, "id" | "name" | "belongsToId">;
 
 export async function createProduct(product: ProductCreate) {
   return database.product.create({ data: product });
+}
+
+export async function deleteProduct(product: ProductDelete) {
+  return database.product.delete({ where: { id_belongsToId: product } });
 }
 
 export async function getProducts(userId: string) {
