@@ -1,3 +1,7 @@
+import type { Request } from "express";
+
 import type { ProductCreation } from "../handlers/product";
 
-export type ProductCreationRequestBody = Pick<ProductCreation, "name">;
+export type ProductCreateRequest = Request<{}, any, ProductCreateRequestBody>;
+
+export type ProductCreateRequestBody = Pick<ProductCreation, "name">;
